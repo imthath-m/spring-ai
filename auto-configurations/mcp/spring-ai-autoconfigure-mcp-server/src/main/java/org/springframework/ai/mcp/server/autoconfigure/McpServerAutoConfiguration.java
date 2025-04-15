@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpAsyncServerExchange;
@@ -284,8 +285,7 @@ public class McpServerAutoConfiguration {
 		List<ToolCallback> providerToolCallbacks = toolCallbackProvider.stream()
 			.map(pr -> List.of(pr.getToolCallbacks()))
 			.flatMap(List::stream)
-			.filter(fc -> fc instanceof ToolCallback)
-			.map(fc -> (ToolCallback) fc)
+			.flatMap(fc -> fc instanceof ToolCallback ? Stream.of((ToolCallback) fc) : Stream.empty() )
 			.toList();
 
 		toolSpecifications.addAll(this.toAsyncToolSpecification(providerToolCallbacks, serverProperties));
